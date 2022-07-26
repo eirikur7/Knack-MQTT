@@ -1,0 +1,70 @@
+import random
+from paho.mqtt import client as mqtt_client
+import pygame
+pygame.init()
+
+# CONSTANTS
+broker = 'broker.emqx.io'
+port = 1883
+topic = "Knack-inputs"
+client_id = f'python-mqtt-{random.randint(0, 1000)}'
+username = 'eirikur'
+password = 'nice-password69'
+keys_allowed = {1073741904: 'left',    # left arrow
+                1073741903: 'right',    # right arrow
+                1073741906: 'up',
+                1073741905: 'down',
+                27: 'esc',
+                119: 'w',
+                97: 'a',
+                115: 's',
+                100: 'd'}
+
+
+def connect_mqtt():
+    def on_connect(client, userdata, flags, rc):
+        if rc == 0:
+            print("Connected to MQTT Broker!")
+        else:
+            print("Failed to connect, return code %d\n", rc)
+
+    client = mqtt_client.Client(client_id)
+    client.username_pw_set(username, password)
+    client.on_connect = on_connect
+    client.connect(broker, port)
+    return client
+
+
+def publish(client, msg):
+    result = client.publish(topic, msg)
+
+    status = result[0]
+    if status == 0:
+        print(f"Send `{msg}` to topic `{topic}`")
+    else:
+        print(f"Failed to send message to topic {topic}")
+
+
+def run():
+    client = connect_mqtt()
+    client.loop_start()
+
+    s = pygame.display.set_mode((200, 200))
+    running = True
+    while running:
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                running = False
+
+            elif e.type == pygame.KEYDOWN:
+                if e.key in keys_allowed:
+                    publish(client, f'{e.key}-d')
+                    print(f"Sending: {e.key}-d")
+
+            elif e.type == pygame.KEYUP:
+                if e.key in keys_allowed:
+                    publish(client, f'{e.key}-u')
+
+
+if __name__ == '__main__':
+    run()

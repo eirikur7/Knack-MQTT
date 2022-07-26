@@ -1,0 +1,17 @@
+import keyboard
+
+
+class KeyboardPress:
+
+    def press_key(self, key):
+        keyboard.press(key)
+
+    def release_key(self, key):
+        keyboard.release(key)
+
+
+if __name__ == "__main__":
+
+    k = KeyboardPress()
+    for i in range(50):
+        k.press_key('left')

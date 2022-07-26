@@ -1,0 +1,24 @@
+This code base lets the user press "wasd" keys and sent the data
+to a cloud base which a subscriber can connect to and receive data
+with minimal bandwidth. Paho MQTT is designed to be used with lightweight IOT devices,
+so they can work with minimal delay and bandwidth.
+
+Publisher:
+    Run publisher on the source computer. The script will send keyboard data to the cloud via MQTT.
+
+Subscriber:
+    Run subscriber on the sink computer. The script will receive data from the cloud via MQTT
+
+For the future:
+    It is possible to make the subscriber know when it disconnects in case of bad internet.
+    Which means it is possible to make the rover stop if it disconnects instead of it going
+    forwards indefinitely.
+
+How to run:
+    On the source computer.
+        Run "sudo pip install -r requirements"
+        Run publisher.py
+
+    On the sink computer.
+        Run "sudo pip install -r requirements"
+        Run subscriber.py
